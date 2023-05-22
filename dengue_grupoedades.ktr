@@ -503,7 +503,7 @@
     <hop>
       <from>ordenar_grupo_edad</from>
       <to>unificar_grupo_edad</to>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
     </hop>
     <hop>
       <from>unificar_grupo_edad</from>
@@ -526,11 +526,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>filtrar_45-64</from>
-      <to>unir_filas</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>seleccionar_grupo_edad</from>
       <to>mayuscular_grupo_edad</to>
       <enabled>Y</enabled>
@@ -543,6 +538,16 @@
     <hop>
       <from>unir_filas</from>
       <to>seleccionar_grupo_edad</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>filtrar_45-64</from>
+      <to>cambiar_id_may_45-64</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>cambiar_id_may_45-64</from>
+      <to>unir_filas</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -742,8 +747,8 @@
     </GUI>
   </step>
   <step>
-    <name>unificar_grupo_edad</name>
-    <type>Unique</type>
+    <name>cambiar_id_45-64</name>
+    <type>ValueMapper</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -752,14 +757,13 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <count_rows>N</count_rows>
-    <count_field/>
-    <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
+    <field_to_use>grupo_edad_id</field_to_use>
+    <target_field/>
+    <non_match_default/>
     <fields>
       <field>
-        <name>id_grupo_edad</name>
-        <case_insensitive>N</case_insensitive>
+        <source_value>10</source_value>
+        <target_value>11</target_value>
       </field>
     </fields>
     <attributes/>
@@ -771,7 +775,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>512</xloc>
+      <xloc>160</xloc>
       <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
@@ -788,7 +792,7 @@
       <schema_name/>
     </partitioning>
     <send_true_to>cambiar_id_45-64</send_true_to>
-    <send_false_to>unir_filas</send_false_to>
+    <send_false_to>cambiar_id_may_45-64</send_false_to>
     <compare>
       <condition>
         <negated>N</negated>
@@ -821,8 +825,8 @@
     </GUI>
   </step>
   <step>
-    <name>cambiar_id_45-64</name>
-    <type>ValueMapper</type>
+    <name>mayuscular_grupo_edad</name>
+    <type>StringOperations</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -831,13 +835,19 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <field_to_use>grupo_edad_id</field_to_use>
-    <target_field/>
-    <non_match_default/>
     <fields>
       <field>
-        <source_value>10</source_value>
-        <target_value>13</target_value>
+        <in_stream_name>grupo_edad</in_stream_name>
+        <out_stream_name/>
+        <trim_type/>
+        <lower_upper>upper</lower_upper>
+        <padding_type/>
+        <pad_char/>
+        <pad_len/>
+        <init_cap/>
+        <mask_xml/>
+        <digits/>
+        <remove_special_characters/>
       </field>
     </fields>
     <attributes/>
@@ -849,8 +859,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>160</xloc>
-      <yloc>48</yloc>
+      <xloc>384</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -905,6 +915,42 @@
     </GUI>
   </step>
   <step>
+    <name>seleccionar_grupo_edad</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>grupo_edad_id</name>
+        <rename>id_grupo_edad</rename>
+      </field>
+      <field>
+        <name>grupo_edad_desc</name>
+        <rename>grupo_edad</rename>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>48</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>tabla_grupo_edad</name>
     <type>TableOutput</type>
     <description/>
@@ -949,8 +995,8 @@
     </GUI>
   </step>
   <step>
-    <name>seleccionar_grupo_edad</name>
-    <type>SelectValues</type>
+    <name>unificar_grupo_edad</name>
+    <type>Unique</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -959,16 +1005,15 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
+    <count_rows>N</count_rows>
+    <count_field/>
+    <reject_duplicate_row>N</reject_duplicate_row>
+    <error_description/>
     <fields>
       <field>
-        <name>grupo_edad_id</name>
-        <rename>id_grupo_edad</rename>
+        <name>id_grupo_edad</name>
+        <case_insensitive>N</case_insensitive>
       </field>
-      <field>
-        <name>grupo_edad_desc</name>
-        <rename>grupo_edad</rename>
-      </field>
-      <select_unspecified>N</select_unspecified>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -979,7 +1024,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
+      <xloc>512</xloc>
       <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
@@ -1052,8 +1097,8 @@
     </GUI>
   </step>
   <step>
-    <name>mayuscular_grupo_edad</name>
-    <type>StringOperations</type>
+    <name>cambiar_id_may_45-64</name>
+    <type>ValueMapper</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -1062,19 +1107,17 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
+    <field_to_use>grupo_edad_id</field_to_use>
+    <target_field/>
+    <non_match_default/>
     <fields>
       <field>
-        <in_stream_name>grupo_edad</in_stream_name>
-        <out_stream_name/>
-        <trim_type/>
-        <lower_upper>upper</lower_upper>
-        <padding_type/>
-        <pad_char/>
-        <pad_len/>
-        <init_cap/>
-        <mask_xml/>
-        <digits/>
-        <remove_special_characters/>
+        <source_value>11</source_value>
+        <target_value>12</target_value>
+      </field>
+      <field>
+        <source_value>12</source_value>
+        <target_value>13</target_value>
       </field>
     </fields>
     <attributes/>
@@ -1086,7 +1129,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
+      <xloc>256</xloc>
       <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
